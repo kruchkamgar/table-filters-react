@@ -1,8 +1,8 @@
 
-const Header = ({id}) => {
+const Header = ({name}) => {
 
   return (
-    <div id={id}>id</div>
+    <th>{name}</th>
   )
 }
 

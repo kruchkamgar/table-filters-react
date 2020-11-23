@@ -2,7 +2,7 @@
 const Row = ({name}) => {
 
   return (
-    <div id={name}>name</div>
+    <div>name</div>
   );
 }
 

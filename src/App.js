@@ -21,12 +21,12 @@ function App() {
 
   const headers =
     headerNames.map( name => {
-      return <Header id={name} click={(element) => setColumn(element.id)}>name</Header>
+      return <Header key={name} name={name} click={(element) => setColumn(element.id)}>name</Header>
     });
 
   const rows =
     rowData.map( datum => {
-      return <Row id={datum.name} name={datum.name}></Row>
+      return <Row key={datum.name} name={datum.name}></Row>
     })
 
   const sortByColumn = (data, colName) => {
@@ -38,7 +38,7 @@ function App() {
 
   return (
     <div className="App">
-      <Table headers="headers" rows="rows"></Table>
+      <Table headers={headers} rows={rows}></Table>
     </div>
   );
 }
