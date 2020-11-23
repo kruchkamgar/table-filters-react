@@ -15,6 +15,10 @@ function App() {
   ]);
   const [column, setColumn] = useState();
 
+  useEffect(() => {
+    sortByColumn(rowData, column)
+  }, [column])
+
   const headers =
     headerNames.map( name => {
       return <Header id={name} click={(element) => setColumn(element.id)}>name</Header>
@@ -25,12 +29,16 @@ function App() {
       return <Row id={datum.name} name={datum.name}></Row>
     })
 
+  const sortByColumn = (data, colName) => {
+    data.sort( (a, b) => {
+      return a[colName] > b[colName] ?
+        1 : -1;
+    });
+  }
 
   return (
     <div className="App">
-      <Table>
-
-      </Table>
+      <Table headers="headers" rows="rows"></Table>
     </div>
   );
 }

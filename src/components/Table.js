@@ -1,6 +1,8 @@
 
 
-const Table = (props) => {
+const Table = ({
+  rows=[], headers=[]
+}) => {
 
   return (
     <div id="table"></div>
