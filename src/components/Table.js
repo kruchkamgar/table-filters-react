@@ -11,6 +11,9 @@ const Table = ({
             {headers}
           </tr>
         </thead>
+        <tbody>
+          {rows}
+        </tbody>
       </table>
     </div>
   );
