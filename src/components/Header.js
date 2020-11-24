@@ -1,8 +1,10 @@
 
-const Header = ({name}) => {
+const Header = ({clickEvent, name}) => {
 
   return (
-    <th>{name}</th>
+    <th onClick={clickEvent} name={name}>
+      {name}
+    </th>
   )
 }
 

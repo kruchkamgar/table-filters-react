@@ -20,9 +20,12 @@ function App() {
   }, [column])
 
   const headers =
-    headerNames.map( name => {
-      return <Header key={name} name={name} click={(element) => setColumn(element.id)}>name</Header>
-    });
+  headerNames.map( name => {
+    return <Header key={name} name={name}
+        clickEvent={(element) => setColumn(
+          element.target.getAttribute('name')) }
+      >name</Header>
+  });
 
   const rows =
     rowData.map( datum => {
