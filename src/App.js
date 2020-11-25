@@ -11,17 +11,19 @@ function App() {
   ]
   const [aPIData, setaPIData] = useState([
     {name: "Capri", city: "Denver"},
-    {name: "Pho4U"}
+    {name: "Pho4U", city: "Denver"},
+    {name:"Dive", city: "San Francisco"}
   ])
-  const [rowData, setRowData] = useState(aPIData);
+  const [rowData, setRowData] = useState(aPIData); // remove initialization when adding fetch
   const [column, setColumn] = useState();
 
   useEffect(() => {
-    sortByColumn(rowData, column)
-  }, [column])
+    setRowData(aPIData);
+  }, [aPIData]);
   useEffect(() => {
-    searchDomain(rowData);
-  }, [rowData])
+    setRowData(
+      sortByColumn(rowData, column) );
+  }, [column]);
 
   const headers =
   headerNames.map( name => {
@@ -32,36 +34,29 @@ function App() {
   });
 
   const rows =
+  rowData.length > 0 ?
     rowData.map( datum => {
-      return <Row key={datum.name} name={datum.name}></Row>
-    })
+      return <Row key={datum.name} name={datum.name}></Row> }) : [];
 
   const sortByColumn = (data, colName) => {
-    data.sort( (a, b) => {
-      return a[colName] > b[colName] ?
-        1 : -1;
+    return [...data].sort( (a, b) => {
+      if (a[colName] > b[colName]) { return 1; }
+      if (a[colName] < b[colName]) { return -1; }
+      return 0;
     });
   }
 
   const searchCols = ['name', 'city', 'genre'];
 
-  // memoize this domain
-  const searchDomain = (data) => {
-    return data.map( (datum, index) => {
-      return { index: index,
-        values: searchCols.map( col => datum[col] ) }
-    });
-  }
-
   const search = (data, searchCols, searchField) => {
-    const domain = searchDomain(data);
-    const matchedIndices = [];
-    domain.forEach( (datum, index) => {
-      if (datum.values.find(value => value === searchField)) {
-        matchedIndices.push(datum.index) }
-    });
+    if (searchField === '') {
+      setRowData(aPIData);
+      return true; }
     setRowData(
-      matchedIndices.map(index => data[index]) )
+      data.filter( row => {
+        return searchCols.some( col => {
+          if( row[col] && row[col].includes(searchField) ) return true; }) })
+    );
   }
 
   return (
