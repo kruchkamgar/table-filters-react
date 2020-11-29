@@ -6,14 +6,22 @@ import Row from './components/Row';
 import { useState, useEffect, useMemo } from 'react';
 
 function App() {
-  const headerNames = [
-    'name', 'city', 'state', 'genre', 'attire', 'phoneNumber'
-  ]
+  // const headerNames = [
+  //   'name', 'city', 'state', 'genre', 'attire', 'phoneNumber'
+  // ]
   const [aPIData, setaPIData] = useState([
     {name: "Capri", city: "Denver"},
     {name: "Pho4U", city: "Denver"},
     {name:"Dive", city: "San Francisco"}
   ])
+  const getHeaderNames = (data) => {
+    const namesArray = data.map( datum => Object.keys(datum));
+    let longestArray = [];
+    namesArray.forEach(array => {
+      if(array.length > longestArray) longestArray = array });
+    return longestArray;
+  }
+  const headerNames = getHeaderNames(aPIData);
   const [rowData, setRowData] = useState(aPIData); // remove initialization when adding fetch
   const [column, setColumn] = useState();
   // const [searchData, setSearchData] = useState();
@@ -35,9 +43,15 @@ function App() {
 
   const headers =
   headerNames.map( name => {
+    // empty categories (0 results) sorted to the end? tabindex for scroll-bottom, subsequently toggles to scroll-top
+    const options = aPIData.map(datum => datum[name]);
+    options.unshift('(all)');
     return <Header key={name} name={name}
         clickEvent={(event) => setColumn(
-          event.target.getAttribute('name')) }
+          event.target.getAttribute('name') )}
+        options={options}
+        selectEvent={(event) => setFilterBy(
+          event.target.value )}
       >name</Header>
   });
 
