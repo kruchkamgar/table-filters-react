@@ -21,11 +21,6 @@ function App() {
   const [searchField, setSearchField] = useState();
   const [filterBy, setFilterBy] = useState();
 
-  // const honeStatus = {
-  //   filter: false,
-  //   search: false
-  // }
-
   const filterData = () => {
     return false;
   }
@@ -85,9 +80,9 @@ function App() {
 
   return (
     <div className="App">
+      <label for="search">text search:</label>
       <input
-        type="text"
-        placeholder="name, city, or genre"
+        name="search" type="text" placeholder="name, city, or genre"
         onKeyUp={ (event) => {
           if (event.keyCode === 13) {
               // setSearchField
