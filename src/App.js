@@ -3,7 +3,7 @@ import Table from './components/Table';
 import Header from './components/Header';
 import Row from './components/Row';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 
 function App() {
   const headerNames = [
@@ -16,6 +16,19 @@ function App() {
   ])
   const [rowData, setRowData] = useState(aPIData); // remove initialization when adding fetch
   const [column, setColumn] = useState();
+  // const [searchData, setSearchData] = useState();
+  // const [filterData, setFilterData] = useState();
+  const [searchField, setSearchField] = useState();
+  const [filterBy, setFilterBy] = useState();
+
+  // const honeStatus = {
+  //   filter: false,
+  //   search: false
+  // }
+
+  const filterData = () => {
+    return false;
+  }
 
   useEffect(() => {
     setRowData(aPIData);
@@ -47,17 +60,28 @@ function App() {
   }
 
   const searchCols = ['name', 'city', 'genre'];
-
   const search = (data, searchCols, searchField) => {
-    if (searchField === '') {
-      setRowData(aPIData);
-      return true; }
-    setRowData(
-      data.filter( row => {
-        return searchCols.some( col => {
-          if( row[col] && row[col].includes(searchField) ) return true; }) })
-    );
+    // broadening action(s) on dataset
+    if (searchField === '' || searchField === undefined) {
+      // if (honeStatus.filter) {
+        // }
+      return aPIData;
+    }
+    return data
+    .filter( row => {
+      return searchCols.some( col => {
+        if( row[col] && row[col].includes(searchField) ) return true; }) })
   }
+
+  const searchResult = useMemo( () => search(rowData, searchCols, searchField), [searchField, filterBy, searchCols]);
+  // const filterResult = useMemo( () => filter(rowData, filterBy), [searchField, filterBy]);
+
+  useEffect(()=> {
+    setRowData(searchResult);
+  }, [searchField, filterBy]);
+  // const executeSearch = (data, searchCols, searchField) => {
+  //   setRowData(searchResult);
+  // }
 
   return (
     <div className="App">
@@ -66,7 +90,9 @@ function App() {
         placeholder="name, city, or genre"
         onKeyUp={ (event) => {
           if (event.keyCode === 13) {
-            search(rowData, searchCols, event.target.value) } }}
+              // setSearchField
+              setSearchField(event.target.value); }
+        }}
       />
       <Table headers={headers} rows={rows}></Table>
     </div>
