@@ -81,8 +81,6 @@ function App() {
   const searchData = (data, searchCols, searchField) => {
     // broadening action(s) on dataset
     if (searchField === '' || searchField === undefined) {
-      // if (honeStatus.filter) {
-        // }
       return aPIData;
     }
     return data
@@ -91,16 +89,27 @@ function App() {
         if( row[col] && row[col].includes(searchField) ) return true; }) })
   }
 
+  const paginateData = (data) => {
+    const numPages = (data.length / 10).toFixed(0) +
+      (data.length % 10) > 0 ?
+        1 : 0;
+    const paginatedData = [];
+    for(let number = 0; number < numPages; number++) {
+        paginatedData.push(
+          [ data.slice((number*10), (number+1)*10 -1) ] );
+    }
+    debugger;
+    return paginatedData;
+  }
+
   const searchResult = useMemo( () => searchData(aPIData, searchCols, searchField), [searchField, filterBy, searchCols]);
   const filterResult = useMemo( () => filterData(searchResult, filterBy), [searchField, filterBy]);
+  const paginatedResult = paginateData(filterResult);
+
 
   useEffect(()=> {
     setRowData(filterResult);
-
   }, [searchField, filterBy]);
-  // const executeSearch = (data, searchCols, searchField) => {
-  //   setRowData(searchResult);
-  // }
 
   return (
     <div className="App">
@@ -109,7 +118,6 @@ function App() {
         name="search" type="text" placeholder="name, city, or genre"
         onKeyUp={ (event) => {
           if (event.keyCode === 13) {
-              // setSearchField
               setSearchField(event.target.value); }
         }}
       />
