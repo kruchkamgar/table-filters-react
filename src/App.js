@@ -24,13 +24,16 @@ function App() {
   const headerNames = getHeaderNames(aPIData);
   const [rowData, setRowData] = useState(aPIData); // remove initialization when adding fetch
   const [column, setColumn] = useState();
-  // const [searchData, setSearchData] = useState();
-  // const [filterData, setFilterData] = useState();
   const [searchField, setSearchField] = useState();
-  const [filterBy, setFilterBy] = useState();
+  const [filterBy, setFilterBy] = useState({
+    column: null, value: '' });
 
-  const filterData = () => {
-    return false;
+  const filterData = (searchResult, filterBy) => {
+    if(filterBy.column) {
+      return searchResult.filter( datum => {
+        return datum[filterBy.column]
+          .includes(filterBy.value) }); }
+    else { return searchResult }
   }
 
   useEffect(() => {
@@ -50,13 +53,19 @@ function App() {
         clickEvent={(event) => setColumn(
           event.target.getAttribute('name') )}
         options={options}
-        selectEvent={(event) => setFilterBy(
-          event.target.value )}
+        selectEvent={(event) => {
+          const value = event.target.value, all = ( value === '(all)' );
+          setFilterBy(
+            { column: all ?
+                null : event.target.getAttribute('name'),
+              value: all ?
+                '' : value } )
+        }}
       >name</Header>
   });
 
   const rows =
-  rowData.length > 0 ?
+  rowData && rowData.length > 0 ?
     rowData.map( datum => {
       return <Row key={datum.name} name={datum.name}></Row> }) : [];
 
@@ -69,7 +78,7 @@ function App() {
   }
 
   const searchCols = ['name', 'city', 'genre'];
-  const search = (data, searchCols, searchField) => {
+  const searchData = (data, searchCols, searchField) => {
     // broadening action(s) on dataset
     if (searchField === '' || searchField === undefined) {
       // if (honeStatus.filter) {
@@ -82,11 +91,12 @@ function App() {
         if( row[col] && row[col].includes(searchField) ) return true; }) })
   }
 
-  const searchResult = useMemo( () => search(rowData, searchCols, searchField), [searchField, filterBy, searchCols]);
-  // const filterResult = useMemo( () => filter(rowData, filterBy), [searchField, filterBy]);
+  const searchResult = useMemo( () => searchData(aPIData, searchCols, searchField), [searchField, filterBy, searchCols]);
+  const filterResult = useMemo( () => filterData(searchResult, filterBy), [searchField, filterBy]);
 
   useEffect(()=> {
-    setRowData(searchResult);
+    setRowData(filterResult);
+
   }, [searchField, filterBy]);
   // const executeSearch = (data, searchCols, searchField) => {
   //   setRowData(searchResult);
