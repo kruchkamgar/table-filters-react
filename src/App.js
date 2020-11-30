@@ -26,13 +26,15 @@ function App() {
   const [column, setColumn] = useState();
   const [searchField, setSearchField] = useState();
   const [filterBy, setFilterBy] = useState({
-    column: null, value: '' });
+    column: [], value: '' });
 
   const filterData = (searchResult, filterBy) => {
-    if(filterBy.column) {
+    if(filterBy.column.length > 0) {
       return searchResult.filter( datum => {
-        return datum[filterBy.column]
-          .includes(filterBy.value) }); }
+        // if a false value not found (#find returns undefined), include the datum
+        return filterBy.column.find(col => {
+          return !datum[col].includes(filterBy.value) }) === undefined ?
+            true : false; })}
     else { return searchResult }
   }
 
@@ -55,11 +57,12 @@ function App() {
         options={options}
         selectEvent={(event) => {
           const value = event.target.value, all = ( value === '(all)' );
-          setFilterBy(
-            { column: all ?
-                null : event.target.getAttribute('name'),
+          setFilterBy(prevState => {
+            return {
+              column: all ?
+                [] : [...prevState, event.target.getAttribute('name')],
               value: all ?
-                '' : value } )
+                '' : value } })
         }}
       >name</Header>
   });
@@ -98,14 +101,12 @@ function App() {
         paginatedData.push(
           [ data.slice((number*10), (number+1)*10 -1) ] );
     }
-    debugger;
     return paginatedData;
   }
 
   const searchResult = useMemo( () => searchData(aPIData, searchCols, searchField), [searchField, filterBy, searchCols]);
   const filterResult = useMemo( () => filterData(searchResult, filterBy), [searchField, filterBy]);
-  const paginatedResult = paginateData(filterResult);
-
+  const paginatedResult = useMemo( () => paginateData(filterResult), [filterResult]);
 
   useEffect(()=> {
     setRowData(filterResult);
