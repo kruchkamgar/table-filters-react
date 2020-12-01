@@ -22,11 +22,12 @@ function App() {
     return longestArray;
   }
   const headerNames = getHeaderNames(aPIData);
-  const [rowData, setRowData] = useState(aPIData); // remove initialization when adding fetch
+  const [rowData, setRowData] = useState([]); // remove initialization when adding fetch
   const [column, setColumn] = useState();
   const [searchField, setSearchField] = useState();
   const [filterBy, setFilterBy] = useState({
     column: [], value: '' });
+  const [pageNumber, setPageNumber] = useState(0);
 
   const filterData = (searchResult, filterBy) => {
     if(filterBy.column.length > 0) {
@@ -67,11 +68,6 @@ function App() {
       >name</Header>
   });
 
-  const rows =
-  rowData && rowData.length > 0 ?
-    rowData.map( datum => {
-      return <Row key={datum.name} name={datum.name}></Row> }) : [];
-
   const sortByColumn = (data, colName) => {
     return [...data].sort( (a, b) => {
       if (a[colName] > b[colName]) { return 1; }
@@ -99,7 +95,7 @@ function App() {
     const paginatedData = [];
     for(let number = 0; number < numPages; number++) {
         paginatedData.push(
-          [ data.slice((number*10), (number+1)*10 -1) ] );
+          data.slice((number*10), (number+1)*10 -1) );
     }
     return paginatedData;
   }
@@ -109,8 +105,13 @@ function App() {
   const paginatedResult = useMemo( () => paginateData(filterResult), [filterResult]);
 
   useEffect(()=> {
-    setRowData(filterResult);
-  }, [searchField, filterBy]);
+    setRowData(paginatedResult);
+  }, [filterResult]);
+
+  const rows =
+  rowData && rowData.length > 0 ?
+    rowData[pageNumber].map( datum => {
+      return <Row key={datum.name} name={datum.name}></Row> }) : [];
 
   return (
     <div className="App">
