@@ -25,17 +25,16 @@ function App() {
   const [rowData, setRowData] = useState([]); // remove initialization when adding fetch
   const [column, setColumn] = useState();
   const [searchField, setSearchField] = useState();
-  const [filterBy, setFilterBy] = useState({
-    column: [], value: '' });
+  const [filterBy, setFilterBy] = useState({});
   const [pageNumber, setPageNumber] = useState(0);
 
   const filterData = (searchResult, filterBy) => {
-    if(filterBy.column.length > 0) {
+    if( Object.keys(filterBy).length > 0 ) {
       return searchResult.filter( datum => {
-        // if a false value not found (#find returns undefined), include the datum
-        return filterBy.column.find(col => {
-          return !datum[col].includes(filterBy.value) }) === undefined ?
-            true : false; })}
+        for ( const [column, value] of Object.entries(filterBy) ) {
+          if( !datum[column] || !datum[column].includes(value) ) return false; }
+        return true })
+    }
     else { return searchResult }
   }
 
@@ -54,16 +53,15 @@ function App() {
     options.unshift('(all)');
     return <Header key={name} name={name}
         clickEvent={(event) => setColumn(
-          event.target.getAttribute('name') )}
+          event.target.name )}
         options={options}
         selectEvent={(event) => {
           const value = event.target.value, all = ( value === '(all)' );
           setFilterBy(prevState => {
-            return {
-              column: all ?
-                [] : [...prevState, event.target.getAttribute('name')],
-              value: all ?
-                '' : value } })
+            const state = {...prevState};
+            state[event.target.name] = all ?
+                '' : value;
+            return state; })
         }}
       >name</Header>
   });
