@@ -1,7 +1,7 @@
 
 const Header = ({clickEvent, selectEvent, name, options=[]}) => {
-  const optionElements = options.map( option => {
-    return <option value={option}>
+  const optionElements = options.map( (option, index) => {
+    return <option key={index} value={option}>
       {option ?
         option.charAt(0).toUpperCase() + option.slice(1) : ''}</option>
   });

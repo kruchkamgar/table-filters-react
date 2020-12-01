@@ -113,7 +113,7 @@ function App() {
 
   return (
     <div className="App">
-      <label for="search">text search:</label>
+      <label htmlFor="search">text search:</label>
       <input
         name="search" type="text" placeholder="name, city, or genre"
         onKeyUp={ (event) => {
