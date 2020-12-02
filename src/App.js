@@ -126,8 +126,7 @@ function App() {
         }}
       />
       <Table headers={headers} rows={rows}/>
-      <Pagination pageNumber={pageNumber} pages={paginatedResult}
-        clickEvent={(event) => { setPageNumber( event.target.getAttribute('pageNumber') ) }}/>
+      <Pagination pageNumber={pageNumber} pages={paginatedResult} setPageNumber={setPageNumber}/>
     </div>
   );
 }

@@ -11,6 +11,10 @@
   display: flex;
   justify-content: center;
 }
+.currentPage {
+  font-weight: bold;
+  color: blue;
+}
 .paginated {
   width: 1em;
 }
