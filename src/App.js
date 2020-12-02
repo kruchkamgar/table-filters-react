@@ -1,5 +1,6 @@
 import './App.css';
 import Table from './components/Table';
+import Pagination from './components/Pagination';
 import Header from './components/Header';
 import Row from './components/Row';
 
@@ -121,7 +122,8 @@ function App() {
               setSearchField(event.target.value); }
         }}
       />
-      <Table headers={headers} rows={rows}></Table>
+      <Table headers={headers} rows={rows}/>
+      <Pagination pageNumber={pageNumber} pages={paginatedResult}/>
     </div>
   );
 }
