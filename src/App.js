@@ -7,21 +7,23 @@ import Row from './components/Row';
 import { useState, useEffect, useMemo } from 'react';
 
 function App() {
-  // const headerNames = [
-  //   'name', 'city', 'state', 'genre', 'attire', 'phoneNumber'
-  // ]
-  const [aPIData, setaPIData] = useState([
-    {name: "Capri", city: "Denver"},
-    {name: "Pho4U", city: "Denver"},
-    {name:"Dive", city: "San Francisco"}
-  ])
+  const [aPIData, setaPIData] = useState([]);
+
+  useEffect( () => {
+    fetch("https://code-challenge.spectrumtoolbox.com/api/restaurants", {
+      headers: {
+        Authorization: "Api-Key q3MNxtfep8Gt", } })
+        .then( response => response.json() )
+        .then( data => setaPIData(data) );
+  }, []);
+
   const getHeaderNames = (data) => {
     const namesArray = data.map( datum => Object.keys(datum));
     let longestArray = [];
     namesArray.forEach(array => {
       if(array.length > longestArray) longestArray = array });
-    return longestArray;
-  }
+    return longestArray; }
+
   const headerNames = getHeaderNames(aPIData);
   const [rowData, setRowData] = useState([]); // remove initialization when adding fetch
   const [column, setColumn] = useState();
@@ -39,9 +41,9 @@ function App() {
     else { return searchResult }
   }
 
-  useEffect(() => {
-    setRowData(aPIData);
-  }, [aPIData]);
+  // useEffect(() => {
+  //   setRowData(aPIData);
+  // }, [aPIData]);
   useEffect(() => {
     setRowData(
       sortByColumn(rowData, column) );
@@ -94,13 +96,13 @@ function App() {
     const paginatedData = [];
     for(let number = 0; number < numPages; number++) {
         paginatedData.push(
-          data.slice((number*10), (number+1)*10 -1) );
+          data.slice((number*10), (number+1)*10) );
     }
     return paginatedData;
   }
 
-  const searchResult = useMemo( () => searchData(aPIData, searchCols, searchField), [searchField, filterBy, searchCols]);
-  const filterResult = useMemo( () => filterData(searchResult, filterBy), [searchField, filterBy]);
+  const searchResult = useMemo( () => searchData(aPIData, searchCols, searchField), [searchField, filterBy, searchCols, aPIData]);
+  const filterResult = useMemo( () => filterData(searchResult, filterBy), [searchField, filterBy, searchResult]);
   const paginatedResult = useMemo( () => paginateData(filterResult), [filterResult]);
 
   useEffect(()=> {
@@ -108,9 +110,9 @@ function App() {
   }, [filterResult]);
 
   const rows =
-  rowData && rowData.length > 0 ?
+  rowData && rowData.length > 0 && Array.isArray(rowData[pageNumber]) ?
     rowData[pageNumber].map( datum => {
-      return <Row key={datum.name} name={datum.name}></Row> }) : [];
+      return <Row key={datum.id} name={datum.name}></Row> }) : [];
 
   return (
     <div className="App">
