@@ -1,16 +1,12 @@
 
-const Row = ({
-  name='', city='', state='', genre='', attire='', phoneNumber=''
-}) => {
+const Row = ({data, headers}) => {
+
+  const tds = headers.map( header => {
+    return <td>{data[header]}</td> });
 
   return (
     <tr>
-      <td>{name}</td>
-      <td>{city}</td>
-      <td>{state}</td>
-      <td>{genre}</td>
-      <td>{attire}</td>
-      <td>{phoneNumber}</td>
+      {tds}
     </tr>
   );
 }

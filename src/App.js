@@ -17,14 +17,14 @@ function App() {
         .then( data => setaPIData(data) );
   }, []);
 
-  const getHeaderNames = (data) => {
-    const namesArray = data.map( datum => Object.keys(datum));
-    let longestArray = [];
-    namesArray.forEach(array => {
-      if(array.length > longestArray) longestArray = array });
-    return longestArray; }
+  // const getHeaderNames = (data) => {
+  //   const namesArray = data.map( datum => Object.keys(datum));
+  //   let longestArray = [];
+  //   namesArray.forEach(array => {
+  //     if(array.length > longestArray) longestArray = array });
+  //   return longestArray; }
 
-  const headerNames = getHeaderNames(aPIData);
+  const headerNames = ['name', 'city', 'state', 'telephone', 'genre'];
   const [rowData, setRowData] = useState([]); // remove initialization when adding fetch
   const [column, setColumn] = useState();
   const [searchField, setSearchField] = useState();
@@ -67,7 +67,7 @@ function App() {
             else { state[event.target.name] = value }
             return state; })
         }}
-      >name</Header>
+      >header</Header>
   });
 
   const sortByColumn = (data, colName) => {
@@ -112,8 +112,8 @@ function App() {
 
   const rows =
   rowData && rowData.length > 0 && Array.isArray(rowData[pageNumber]) ?
-    rowData[pageNumber].map( datum => {
-      return <Row key={datum.id} name={datum.name}></Row> }) : [];
+    rowData[pageNumber].map( rowDatum => {
+      return <Row key={rowDatum.id} data={rowDatum} headers={headerNames}></Row> }) : [];
 
   return (
     <div className="App">
