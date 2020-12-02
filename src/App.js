@@ -91,9 +91,9 @@ function App() {
   }
 
   const paginateData = (data) => {
-    const numPages = (data.length / 10).toFixed(0) +
-      (data.length % 10) > 0 ?
-        1 : 0;
+    const numPages = Math.floor(data.length / 10) +
+      ( (data.length % 10) > 0 ?
+          1 : 0 );
     const paginatedData = [];
     for(let number = 0; number < numPages; number++) {
         paginatedData.push(
