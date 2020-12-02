@@ -59,8 +59,8 @@ function App() {
           const value = event.target.value, all = ( value === '(all)' );
           setFilterBy(prevState => {
             const state = {...prevState};
-            state[event.target.name] = all ?
-                '' : value;
+            if(all) { delete state[event.target.name] }
+            else { state[event.target.name] = value }
             return state; })
         }}
       >name</Header>
