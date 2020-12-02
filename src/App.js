@@ -50,14 +50,15 @@ function App() {
   }, [column]);
 
   const headers =
-  headerNames.map( name => {
+  headerNames.map( header => {
     // empty categories (0 results) sorted to the end? tabindex for scroll-bottom, subsequently toggles to scroll-top
-    const options = aPIData.map(datum => datum[name]);
-    options.unshift('(all)');
-    return <Header key={name} name={name}
+    const options = new Set;
+    options.add('(all)');
+    aPIData.forEach( datum => options.add(datum[header]) );
+    return <Header key={header} name={header}
         clickEvent={(event) => setColumn(
           event.target.name )}
-        options={options}
+        options={[...options]}
         selectEvent={(event) => {
           const value = event.target.value, all = ( value === '(all)' );
           setFilterBy(prevState => {
