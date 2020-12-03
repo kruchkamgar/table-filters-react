@@ -13,8 +13,8 @@ function App() {
     fetch("https://code-challenge.spectrumtoolbox.com/api/restaurants", {
       headers: {
         Authorization: "Api-Key q3MNxtfep8Gt", } })
-        .then( response => response.json() )
-        .then( data => setaPIData(data) );
+      .then( response => response.json() )
+      .then( data => setaPIData(data) );
   }, []);
 
   // const getHeaderNames = (data) => {
@@ -26,7 +26,7 @@ function App() {
 
   const headerNames = ['name', 'city', 'state', 'telephone', 'genre'];
   const [rowData, setRowData] = useState([]); // remove initialization when adding fetch
-  const [column, setColumn] = useState();
+  const [column, setColumn] = useState('name');
   const [searchField, setSearchField] = useState();
   const [filterBy, setFilterBy] = useState({});
   const [pageNumber, setPageNumber] = useState(0);
@@ -104,16 +104,17 @@ function App() {
 
   const searchResult = useMemo( () => searchData(aPIData, searchCols, searchField), [searchField, filterBy, searchCols, aPIData]);
   const filterResult = useMemo( () => filterData(searchResult, filterBy), [searchField, filterBy, searchResult]);
-  const paginatedResult = useMemo( () => paginateData(filterResult), [filterResult]);
+  const paginatedResult = useMemo( () => paginateData(rowData), [rowData]);
 
-  useEffect(()=> {
-    setRowData(paginatedResult);
+  useEffect(() => {
+    setRowData(
+      sortByColumn(filterResult, column));
   }, [filterResult]);
 
   const rows =
-  rowData && rowData.length > 0 && Array.isArray(rowData[pageNumber]) ?
-    rowData[pageNumber].map( rowDatum => {
-      return <Row key={rowDatum.id} data={rowDatum} headers={headerNames}></Row> }) : [];
+  paginatedResult && paginatedResult.length > 0 && Array.isArray(paginatedResult[pageNumber]) ?
+    paginatedResult[pageNumber].map( rowDatum => {
+      return <Row key={rowDatum.id} data={rowDatum} headers={Object.keys(headerNames)}></Row> }) : [];
 
   return (
     <div className="App">
