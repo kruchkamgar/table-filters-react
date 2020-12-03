@@ -8,13 +8,18 @@ import { useState, useEffect, useMemo } from 'react';
 
 function App() {
   const [aPIData, setaPIData] = useState([]);
+  const headerNames = {'name':false, 'city':false, 'state':false, 'telephone':false, 'genre':false, 'attire':true}; // { caseSensitivity: boolean, exactMatch: boolean, delimiter: '<insert delimiter>'}
+  const filterOptions = [];
 
   useEffect( () => {
     fetch("https://code-challenge.spectrumtoolbox.com/api/restaurants", {
       headers: {
         Authorization: "Api-Key q3MNxtfep8Gt", } })
       .then( response => response.json() )
-      .then( data => setaPIData(data) );
+      .then( data => {
+        setaPIData(data)
+        // createFilterOptions(filterOptions, data);
+      });
   }, []);
 
   // const getHeaderNames = (data) => {
@@ -24,8 +29,7 @@ function App() {
   //     if(array.length > longestArray) longestArray = array });
   //   return longestArray; }
 
-  const headerNames = ['name', 'city', 'state', 'telephone', 'genre'];
-  const [rowData, setRowData] = useState([]); // remove initialization when adding fetch
+  const [rowData, setRowData] = useState([]);
   const [column, setColumn] = useState('name');
   const [searchField, setSearchField] = useState();
   const [filterBy, setFilterBy] = useState({});
@@ -35,36 +39,37 @@ function App() {
     if( Object.keys(filterBy).length > 0 ) {
       return searchResult.filter( datum => {
         for ( const [column, value] of Object.entries(filterBy) ) {
-          if( !datum[column] || !datum[column].includes(value) ) return false; }
-        return true })
+          if(value.exact){
+            if( !datum[column] || !(datum[column].toLowerCase() === value.value) ) return false; }
+          else {
+            if( !datum[column] || !datum[column].includes(value.value) ) return false; } }
+        return true });
     }
     else { return searchResult }
   }
 
-  // useEffect(() => {
-  //   setRowData(aPIData);
-  // }, [aPIData]);
-  useEffect(() => {
-    setRowData(
-      sortByColumn(rowData, column) );
-  }, [column]);
-
   const headers =
-  headerNames.map( header => {
+  Object.keys(headerNames).map( header => {
+    //TODO: give indication when no results exist (filter or here)
     // empty categories (0 results) sorted to the end? tabindex for scroll-bottom, subsequently toggles to scroll-top
     const options = new Set;
     options.add('(all)');
-    aPIData.forEach( datum => options.add(datum[header]) );
+    if(headerNames[header]){
+      aPIData.forEach( datum => options.add( datum[header].toLowerCase() ) )}
+    else {
+      aPIData.forEach( datum => options.add(datum[header]) )}
+
     return <Header key={header} name={header}
         clickEvent={(event) => setColumn(
           event.target.name )}
         options={[...options]}
         selectEvent={(event) => {
           const value = event.target.value, all = ( value === '(all)' );
+          const name = event.target.name;
           setFilterBy(prevState => {
             const state = {...prevState};
-            if(all) { delete state[event.target.name] }
-            else { state[event.target.name] = value }
+            if(all) { delete state[name] }
+            else { state[name] = {value:value, exact:headerNames[name]} }
             return state; })
         }}
       >header</Header>
@@ -105,6 +110,7 @@ function App() {
   const searchResult = useMemo( () => searchData(aPIData, searchCols, searchField), [searchField, filterBy, searchCols, aPIData]);
   const filterResult = useMemo( () => filterData(searchResult, filterBy), [searchField, filterBy, searchResult]);
   const paginatedResult = useMemo( () => paginateData(rowData), [rowData]);
+
 
   useEffect(() => {
     setRowData(
