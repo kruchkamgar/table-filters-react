@@ -8,8 +8,29 @@ import { useState, useEffect, useMemo } from 'react';
 
 function App() {
   const [aPIData, setaPIData] = useState([]);
-  const headerNames = {'name':false, 'city':false, 'state':false, 'telephone':false, 'genre':false, 'attire':true}; // { caseSensitivity: boolean, exactMatch: boolean, delimiter: '<insert delimiter>'}
+  const [headerOptions, setHeaderOptions] = useState();
+  const headersConfig = {'name': false, 'city':false,'state':false, 'telephone':false, 'genre': {delimiter: ','}, 'attire': {caseSensitivity: false, exactTerms: true} };
   const filterOptions = [];
+
+  const getHeaderOptions = (data, headersConfig) => {
+    const headerOptions = {};
+    for( const [name, config] of Object.entries(headersConfig) ){
+      const queuedOptions = [];
+      for (const datum in data) {
+        if(config.delimiter) {
+          const split = data[datum][name].split(config.delimiter);
+          queuedOptions.push(...split); }
+        else { queuedOptions.push(data[datum][name]); } };
+      if(!config.caseSensitivity) {
+        for(let option in queuedOptions){
+          queuedOptions[option] = queuedOptions[option].toLowerCase(); }}
+
+      const options = new Set(['(all)']);
+      for(const option of queuedOptions) {
+        options.add(option); }
+      headerOptions[name] = options; }
+    return headerOptions;
+  }
 
   useEffect( () => {
     fetch("https://code-challenge.spectrumtoolbox.com/api/restaurants", {
@@ -18,17 +39,13 @@ function App() {
       .then( response => response.json() )
       .then( data => {
         setaPIData(data)
+        setHeaderOptions(
+          getHeaderOptions(data, headersConfig) )
         // createFilterOptions(filterOptions, data);
       });
   }, []);
 
-  // const getHeaderNames = (data) => {
-  //   const namesArray = data.map( datum => Object.keys(datum));
-  //   let longestArray = [];
-  //   namesArray.forEach(array => {
-  //     if(array.length > longestArray) longestArray = array });
-  //   return longestArray; }
-
+  const [headers, setHeaders] = useState([]);
   const [rowData, setRowData] = useState([]);
   const [column, setColumn] = useState('name');
   const [searchField, setSearchField] = useState();
@@ -39,41 +56,42 @@ function App() {
     if( Object.keys(filterBy).length > 0 ) {
       return searchResult.filter( datum => {
         for ( const [column, value] of Object.entries(filterBy) ) {
-          if(value.exact){
-            if( !datum[column] || !(datum[column].toLowerCase() === value.value) ) return false; }
+          const config = headersConfig[column];
+          if(config.exactTerms){
+            if(config.caseSensitivity){
+              if( !datum[column] || !(datum[column] === value) ) return false; }
+            if( !datum[column] || !(datum[column].toLowerCase() === value) ) return false; }
           else {
-            if( !datum[column] || !datum[column].includes(value.value) ) return false; } }
+            if( !datum[column] || !datum[column].includes(value) ) return false; } }
         return true });
     }
     else { return searchResult }
   }
 
-  const headers =
-  Object.keys(headerNames).map( header => {
-    //TODO: give indication when no results exist (filter or here)
-    // empty categories (0 results) sorted to the end? tabindex for scroll-bottom, subsequently toggles to scroll-top
-    const options = new Set;
-    options.add('(all)');
-    if(headerNames[header]){
-      aPIData.forEach( datum => options.add( datum[header].toLowerCase() ) )}
-    else {
-      aPIData.forEach( datum => options.add(datum[header]) )}
-
-    return <Header key={header} name={header}
+  useEffect( () => {
+    if(headerOptions !== undefined) {
+      const headerAdd = Object.keys(headersConfig).map( header => {
+        //TODO: give indication when no results exist (filter or here)
+        // empty categories (0 results) sorted to the end? tabindex for scroll-bottom, subsequently toggles to scroll-top
+        return <Header key={header} name={header}
         clickEvent={(event) => setColumn(
           event.target.name )}
-        options={[...options]}
-        selectEvent={(event) => {
-          const value = event.target.value, all = ( value === '(all)' );
-          const name = event.target.name;
-          setFilterBy(prevState => {
-            const state = {...prevState};
-            if(all) { delete state[name] }
-            else { state[name] = {value:value, exact:headerNames[name]} }
-            return state; })
-        }}
-      >header</Header>
-  });
+          options={[...headerOptions[header]]}
+          selectEvent={(event) => {
+            const value = event.target.value, all = ( value === '(all)' );
+            const name = event.target.name;
+            setFilterBy(prevState => {
+              const state = {...prevState};
+              if(all) { delete state[name] }
+              // else { state[name] = {value:value, exact:headerNames[name]} }
+              else { state[name] = value }
+              return state; })
+            }}
+            >header</Header>
+          });
+      setHeaders(headerAdd);
+    }
+  }, [headerOptions])
 
   const sortByColumn = (data, colName) => {
     return [...data].sort( (a, b) => {
@@ -120,14 +138,14 @@ function App() {
   const rows =
   paginatedResult && paginatedResult.length > 0 && Array.isArray(paginatedResult[pageNumber]) ?
     paginatedResult[pageNumber].map( rowDatum => {
-      return <Row key={rowDatum.id} data={rowDatum} headers={Object.keys(headerNames)}></Row> }) : [];
+      return <Row key={rowDatum.id} data={rowDatum} headers={Object.keys(headersConfig)}></Row> }) : [];
 
   return (
     <div className="App">
       <label htmlFor="search">text search:</label>
       <input
         name="search" type="text" placeholder="name, city, or genre"
-        onKeyUp={ (event) => {
+        onKeyUp={ (event) => { //very slow... move to 'onChange' for input perhaps
           if (event.keyCode === 13) {
               setSearchField(event.target.value); }
         }}
