@@ -156,14 +156,17 @@ function App() {
     paginatedResult[pageNumber].map( rowDatum => {
       return <Row key={rowDatum.id} data={rowDatum} headers={Object.keys(headersConfig)}></Row> }) : [];
 
+  const initiateSearch = (event) => { if(event.keyCode===13) setSearchField(event.target.value) }
+
   return (
     <div className="App">
       <label htmlFor="search">text search:</label>
       <input
         name="search" type="text" placeholder="name, city, or genre"
         onKeyUp={ (event) => { //very slow... move to 'onChange' for input perhaps
-          if (event.keyCode === 13) {
-              setSearchField(event.target.value); }
+          initiateSearch(event);
+          // if (event.keyCode === 13) {
+          //     setSearchField(event.target.value); }
         }}
       />
       <Table headers={headers} rows={rows}/>
