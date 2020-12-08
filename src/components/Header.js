@@ -1,6 +1,7 @@
 
 const Header = ({clickEvent, selectEvent, name, options=[]}) => {
   const optionElements = options.map( (option, index) => {
+    //option counts: add a couple divs to contain the option name and count
     return <option key={index} value={option}>
       {option ?
         option.charAt(0).toUpperCase() + option.slice(1) : ''}</option>

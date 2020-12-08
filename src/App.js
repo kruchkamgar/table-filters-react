@@ -12,6 +12,17 @@ function App() {
   const headersConfig = {'name': false, 'city':false,'state':false, 'telephone':false, 'genre': {delimiter: ','}, 'attire': {caseSensitivity: false, exactTerms: true} };
   const filterOptions = [];
 
+// option counts feature--
+  // const sumRowsPerOption = (data, options, column, config) => {
+  //   for(const option in options){
+  //     let count = 0;
+  //     for(const datum of data) {
+  //       count = datum[column].includes(options[option]) ?  // TODO: add config-specific operation
+  //         count+1 : count; }
+  //     options[option] = {options[option]: count};
+  //   }
+  // }
+
   const getHeaderOptions = (data, headersConfig) => {
     const headerOptions = {};
     for( const [name, config] of Object.entries(headersConfig) ){
@@ -25,6 +36,7 @@ function App() {
         for(let option in queuedOptions){
           queuedOptions[option] = queuedOptions[option].toLowerCase(); }}
 
+      //feature: use 'filterResult' to calculate the number of rows matching each filter option (queuedOptions)
       const options = new Set(['(all)']);
       for(const option of queuedOptions) {
         options.add(option); }
