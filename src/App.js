@@ -116,8 +116,6 @@ function App() {
     });
   }
 
-  const searchCols = ['name', 'city', 'genre'];
-
   const paginateData = (data) => {
     const numPages = Math.floor(data.length / 10) +
       ( (data.length % 10) > 0 ?
@@ -130,7 +128,7 @@ function App() {
     return paginatedData;
   }
 
-  const searchResult = useMemo( () => searchData(aPIData, searchCols, searchField), [searchField, filterBy, searchCols, aPIData]);
+  const searchResult = useMemo( () => searchData(aPIData, searchField), [searchField, filterBy, aPIData]);
   const filterResult = useMemo( () => filterData(searchResult, filterBy), [searchField, filterBy, searchResult]);
   const paginatedResult = useMemo( () => paginateData(rowData), [rowData]);
 

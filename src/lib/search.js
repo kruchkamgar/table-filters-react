@@ -1,6 +1,8 @@
 import headersConfig from '../config/headersConfig';
 
-const searchData = (data, searchCols, searchField) => {
+const searchCols = ['name', 'city', 'genre'];
+
+const searchData = (data, searchField) => {
   // broadening action(s) on dataset
   if (searchField === '' || searchField === undefined) {
     return data;
