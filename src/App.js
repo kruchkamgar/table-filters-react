@@ -89,8 +89,8 @@ function App() {
         //TODO: give indication when no results exist (filter or here)
         // empty categories (0 results) sorted to the end? tabindex for scroll-bottom, subsequently toggles to scroll-top
         return <Header key={header} name={header}
-        clickEvent={(event) => setColumn(
-          event.target.name )}
+          clickEvent={(event) => setColumn(
+            event.target.name )}
           options={[...headerOptions[header]]}
           selectEvent={(event) => {
             const value = event.target.value, all = ( value === '(all)' );
@@ -101,9 +101,9 @@ function App() {
               // else { state[name] = {value:value, exact:headerNames[name]} }
               else { state[name] = value }
               return state; })
-            }}
-            >header</Header>
-          });
+          }}
+          >header</Header>
+      });
       setHeaders(headerAdd);
     }
   }, [headerOptions])
