@@ -5,6 +5,7 @@ import Header from './components/Header';
 import Row from './components/Row';
 
 import searchData from './lib/search';
+import filterData from './lib/filter';
 import headersConfig from './config/headersConfig';
 
 import { useState, useEffect, useMemo } from 'react';
@@ -67,23 +68,7 @@ function App() {
   const [filterBy, setFilterBy] = useState({});
   const [pageNumber, setPageNumber] = useState(0);
 
-  const filterData = (searchResult, filterBy) => {
-    if( Object.keys(filterBy).length > 0 ) {
-      return searchResult.filter( datum => {
-        for ( const [column, value] of Object.entries(filterBy) ) {
-          const config = headersConfig[column];
-          if(config.exactTerms){
-            if(config.caseSensitivity){
-              if( !datum[column] || !(datum[column] === value) ) return false; }
-            if( !datum[column] || !(datum[column].toLowerCase() === value) ) return false; }
-          else {
-            if( !datum[column] || !datum[column].includes(value) ) return false; } }
-        return true });
-    }
-    else { return searchResult }
-  }
-
-  useEffect( () => {
+    useEffect( () => {
     if(headerOptions !== undefined) {
       const headerAdd = Object.keys(headersConfig).map( header => {
         //TODO: give indication when no results exist (filter or here)
