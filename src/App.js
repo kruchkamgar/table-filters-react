@@ -37,8 +37,10 @@ function App() {
   const [searchField, setSearchField] = useState();
   const [filterBy, setFilterBy] = useState({});
   const [pageNumber, setPageNumber] = useState(0);
+  // keep track of each filterResult prior to application of each column filter
+  const [priorFilterResults, setPriorFilterResults] = useState({});
 
-    useEffect( () => {
+  useEffect( () => {
     if(headerOptions !== undefined) {
       const headerAdd = Object.keys(headersConfig).map( header => {
         //TODO: give indication when no results exist (filter or here)
@@ -46,7 +48,7 @@ function App() {
         return <Header key={header} name={header}
           clickEvent={(event) => setColumn(
             event.target.name )}
-          options={[...headerOptions[header]]}
+          options={headerOptions[header]}
           selectEvent={(event) => {
             const value = event.target.value, all = ( value === '(all)' );
             const name = event.target.name;
@@ -78,7 +80,16 @@ function App() {
   useEffect(() => {
     setRowData(
       sortByColumn(filterResult, column));
+    // setPriorFilterResults
+    // prevState =>
+    // set filter results for each active filterBy column, independently
+      // update the column filter results only when the filterBy diff doesnt include said column
   }, [filterResult]);
+
+  useEffect(() => {
+    // setHeaderOptions(
+      // getHeaderOptions(priorFilterResults, headersConfig) )
+  }, [priorFilterResults]);
 
   const rows =
   paginatedResult && paginatedResult.length > 0 && Array.isArray(paginatedResult[pageNumber]) ?
