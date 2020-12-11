@@ -18,17 +18,6 @@ function App() {
   // put into own file-- so that methods may import it (over including as an argument)
   const filterOptions = [];
 
-// option counts feature--
-  // const sumRowsPerOption = (data, options, column, config) => {
-  //   for(const option in options){
-  //     let count = 0;
-  //     for(const datum of data) {
-  //       count = datum[column].includes(options[option]) ?  // TODO: add config-specific operation
-  //         count+1 : count; }
-  //     options[option] = {options[option]: count};
-  //   }
-  // }
-
   useEffect( () => {
     fetch("https://code-challenge.spectrumtoolbox.com/api/restaurants", {
       headers: {
