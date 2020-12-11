@@ -80,16 +80,13 @@ function App() {
   useEffect(() => {
     setRowData(
       sortByColumn(filterResult, column));
-    // setPriorFilterResults
-    // prevState =>
-    // set filter results for each active filterBy column, independently
-      // update the column filter results only when the filterBy diff doesnt include said column
+
   }, [filterResult]);
 
   useEffect(() => {
     // setHeaderOptions(
-      // getHeaderOptions(priorFilterResults, headersConfig) )
-  }, [priorFilterResults]);
+      // getHeaderOptions(filterResults, headersConfig) )
+  }, [filterResults]);
 
   const rows =
   paginatedResult && paginatedResult.length > 0 && Array.isArray(paginatedResult[pageNumber]) ?
