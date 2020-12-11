@@ -8,6 +8,7 @@ import searchData from './lib/search';
 import filterData from './lib/filter';
 import headersConfig from './config/headersConfig';
 import getHeaderOptions from './lib/headerOptions';
+import paginateData from './lib/paginate';
 
 import { useState, useEffect, useMemo } from 'react';
 
@@ -81,22 +82,9 @@ function App() {
     });
   }
 
-  const paginateData = (data) => {
-    const numPages = Math.floor(data.length / 10) +
-      ( (data.length % 10) > 0 ?
-          1 : 0 );
-    const paginatedData = [];
-    for(let number = 0; number < numPages; number++) {
-        paginatedData.push(
-          data.slice((number*10), (number+1)*10) );
-    }
-    return paginatedData;
-  }
-
   const searchResult = useMemo( () => searchData(aPIData, searchField), [searchField, filterBy, aPIData]);
   const filterResult = useMemo( () => filterData(searchResult, filterBy), [searchField, filterBy, searchResult]);
   const paginatedResult = useMemo( () => paginateData(rowData), [rowData]);
-
 
   useEffect(() => {
     setRowData(
