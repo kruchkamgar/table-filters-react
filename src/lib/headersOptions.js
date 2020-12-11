@@ -1,6 +1,7 @@
 const getHeaderOptions = (data, headersConfig) => {
   const headerOptions = {};
   for( const [name, config] of Object.entries(headersConfig) ){
+    if(!config) continue;
     const queuedOptions = [];
     for (const datum in data) {
       if(config.delimiter) {
