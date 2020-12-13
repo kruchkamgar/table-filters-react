@@ -38,7 +38,7 @@ function App() {
   const [filterBy, setFilterBy] = useState({});
   const [pageNumber, setPageNumber] = useState(0);
   // keep track of each filterResult prior to application of each column filter
-  const [priorFilterResults, setPriorFilterResults] = useState({});
+  const [baselineFilterResults, setbaselineFilterResults] = useState({});
 
   useEffect( () => {
     if(headerOptions !== undefined) {
@@ -81,26 +81,26 @@ function App() {
     setRowData(
       sortByColumn(filterResult, column));
     if(filterResult.length > 0) {
-      const newPriorFilterResults = {};
+      const newbaselineFilterResults = {};
       // add headerConfig parent set, to set all filters with new filterResult
       for( const[header, config] of Object.entries(headersConfig) ) {
           const isolationFilterBy = {...filterBy};
           delete isolationFilterBy[header];
-          newPriorFilterResults[header] = filterData(searchResult, isolationFilterBy)
+          newbaselineFilterResults[header] = filterData(searchResult, isolationFilterBy)
       }
-      setPriorFilterResults(newPriorFilterResults) }
+      setbaselineFilterResults(newbaselineFilterResults) }
       // set filter results for each active filterBy column, independently
         // update the column filter results only when the filterBy update involves a different column
   }, [filterResult]);
 
   useEffect(() => {
-    if(Object.keys(priorFilterResults).length > 0) {
-      const updatedHeaderOptions = getHeaderOptions(priorFilterResults, headersConfig, true)
+    if(Object.keys(baselineFilterResults).length > 0) {
+      const updatedHeaderOptions = getHeaderOptions(baselineFilterResults, headersConfig, true)
 
       setHeaderOptions(prevState => {
         return Object.assign({}, prevState, updatedHeaderOptions);
       }) }
-  }, [priorFilterResults]);
+  }, [baselineFilterResults]);
 
   const rows =
   paginatedResult && paginatedResult.length > 0 && Array.isArray(paginatedResult[pageNumber]) ?

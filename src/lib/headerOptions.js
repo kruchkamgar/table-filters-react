@@ -1,8 +1,8 @@
-const getHeaderOptions = (data, headersConfig, setPriors=false) => {
+const getHeaderOptions = (data, headersConfig, setBaseline=false) => {
   const headerOptions = {};
   for( const [column, config] of Object.entries(headersConfig) ){
     let queuedOptions = []
-    if(setPriors){
+    if(setBaseline){
       if(data[column] === undefined) continue;
       queuedOptions = formOptions(data[column], column, config) }
     else{
