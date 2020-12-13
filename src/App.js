@@ -80,15 +80,26 @@ function App() {
   useEffect(() => {
     setRowData(
       sortByColumn(filterResult, column));
-    // setPriorFilterResults
-    // prevState =>
-    // set filter results for each active filterBy column, independently
-      // update the column filter results only when the filterBy update involves a different column
+    if(filterResult.length > 0) {
+      const newPriorFilterResults = {};
+      // add headerConfig parent set, to set all filters with new filterResult
+      for( const[header, config] of Object.entries(headersConfig) ) {
+          const isolationFilterBy = {...filterBy};
+          delete isolationFilterBy[header];
+          newPriorFilterResults[header] = filterData(searchResult, isolationFilterBy)
+      }
+      setPriorFilterResults(newPriorFilterResults) }
+      // set filter results for each active filterBy column, independently
+        // update the column filter results only when the filterBy update involves a different column
   }, [filterResult]);
 
   useEffect(() => {
-    // setHeaderOptions(
-      // getHeaderOptions(priorFilterResults, headersConfig) )
+    if(Object.keys(priorFilterResults).length > 0) {
+      const updatedHeaderOptions = getHeaderOptions(priorFilterResults, headersConfig, true)
+
+      setHeaderOptions(prevState => {
+        return Object.assign({}, prevState, updatedHeaderOptions);
+      }) }
   }, [priorFilterResults]);
 
   const rows =
