@@ -80,7 +80,6 @@ function App() {
   useEffect(() => {
     setRowData(
       sortByColumn(filterResult, column));
-    if(filterResult.length > 0) {
       const newBaselineFilterResults = {};
       // add headerConfig parent set, to set all filters with new filterResult
       for( const[header, config] of Object.entries(headersConfig) ) {
