@@ -7,14 +7,14 @@ import Row from './components/Row';
 import searchData from './lib/search';
 import filterData from './lib/filter';
 import headersConfig from './config/headersConfig';
-import getHeaderOptions from './lib/headerOptions';
+import getheadersOptions from './lib/headersOptions';
 import paginateData from './lib/paginate';
 
 import { useState, useEffect, useMemo } from 'react';
 
 function App() {
   const [aPIData, setaPIData] = useState([]);
-  const [headerOptions, setHeaderOptions] = useState();
+  const [headersOptions, setheadersOptions] = useState();
   // put into own file-- so that methods may import it (over including as an argument)
   const filterOptions = [];
 
@@ -25,8 +25,8 @@ function App() {
       .then( response => response.json() )
       .then( data => {
         setaPIData(data)
-        setHeaderOptions(
-          getHeaderOptions(data, headersConfig) )
+        setheadersOptions(
+          getheadersOptions(data, headersConfig) )
         // createFilterOptions(filterOptions, data);
       });
   }, []);
@@ -40,11 +40,13 @@ function App() {
   // keep track of each filterResult prior to application of each column filter
   const [baselineFilterResults, setBaselineFilterResults] = useState({});
 
-  useEffect( () => {
-    if(headerOptions !== undefined) {
+    useEffect( () => {
+    if(headersOptions !== undefined) {
       const headerAdd = Object.keys(headersConfig).map( header => {
         //TODO: give indication when no results exist (filter or here)
         // empty categories (0 results) sorted to the end? tabindex for scroll-bottom, subsequently toggles to scroll-top
+        const headerOptions = headersOptions[header] ?
+          [...headersOptions[header]] : [];
         return <Header key={header} name={header}
           clickEvent={(event) => setColumn(
             event.target.name )}
@@ -63,7 +65,7 @@ function App() {
       });
       setHeaders(headerAdd);
     }
-  }, [headerOptions])
+  }, [headersOptions])
 
   const sortByColumn = (data, colName) => {
     return [...data].sort( (a, b) => {
