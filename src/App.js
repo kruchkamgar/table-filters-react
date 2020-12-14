@@ -40,25 +40,26 @@ function App() {
   // keep track of each filterResult prior to application of each column filter
   const [baselineFilterResults, setBaselineFilterResults] = useState({});
 
-    useEffect( () => {
+  useEffect( () => {
     if(headersOptions !== undefined) {
       const headerAdd = Object.keys(headersConfig).map( header => {
-        //TODO: give indication when no results exist (filter or here)
-        // empty categories (0 results) sorted to the end? tabindex for scroll-bottom, subsequently toggles to scroll-top
+        // user story note: only shows an option if exists in data (per user story 3 --otherwise, would show (0) next to state, if even empty states populated)
+        // idea: empty categories (0 results) sorted to the end? tabindex for scroll-bottom, subsequently toggles to scroll-top
+        const selectEvent = (event) => {
+          const value = event.target.value, all = ( value === '(all)' );
+          const name = event.target.name;
+          setFilterBy(prevState => {
+            const state = {...prevState};
+            if(all) { delete state[name] }
+            else { state[name] = value }
+            return state; }) }
+
         return <Header key={header} name={header}
           clickEvent={(event) => setColumn(
             event.target.name )}
           options={headersOptions[header]}
-          selectEvent={(event) => {
-            const value = event.target.value, all = ( value === '(all)' );
-            const name = event.target.name;
-            setFilterBy(prevState => {
-              const state = {...prevState};
-              if(all) { delete state[name] }
-              // else { state[name] = {value:value, exact:headerNames[name]} }
-              else { state[name] = value }
-              return state; })
-          }}
+          selectEvent={selectEvent}
+          filterBy={filterBy}
           >header</Header>
       });
       setHeaders(headerAdd);
