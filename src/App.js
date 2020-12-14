@@ -38,7 +38,7 @@ function App() {
   const [filterBy, setFilterBy] = useState({});
   const [pageNumber, setPageNumber] = useState(0);
   // keep track of each filterResult prior to application of each column filter
-  const [baselineFilterResults, setbaselineFilterResults] = useState({});
+  const [baselineFilterResults, setBaselineFilterResults] = useState({});
 
   useEffect( () => {
     if(headerOptions !== undefined) {
@@ -81,14 +81,14 @@ function App() {
     setRowData(
       sortByColumn(filterResult, column));
     if(filterResult.length > 0) {
-      const newbaselineFilterResults = {};
+      const newBaselineFilterResults = {};
       // add headerConfig parent set, to set all filters with new filterResult
       for( const[header, config] of Object.entries(headersConfig) ) {
           const isolationFilterBy = {...filterBy};
           delete isolationFilterBy[header];
-          newbaselineFilterResults[header] = filterData(searchResult, isolationFilterBy)
+          newBaselineFilterResults[header] = filterData(searchResult, isolationFilterBy)
       }
-      setbaselineFilterResults(newbaselineFilterResults) }
+      setBaselineFilterResults(newBaselineFilterResults) }
       // set filter results for each active filterBy column, independently
         // update the column filter results only when the filterBy update involves a different column
   }, [filterResult]);
