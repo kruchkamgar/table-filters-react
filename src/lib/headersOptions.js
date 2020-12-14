@@ -1,6 +1,7 @@
 const getHeadersOptions = (data, headersConfig, setBaseline=false) => {
   const headersOptions = {};
   for( const [column, config] of Object.entries(headersConfig) ){
+    if(!config) continue;
     let queuedOptions = []
     if(setBaseline){
       if(data[column] === undefined) continue;
