@@ -56,7 +56,7 @@ function App() {
 
         return <Header key={header} name={header}
           clickEvent={(event) => setColumn(
-            event.target.name )}
+            event.target.getAttribute('name') )}
           options={headersOptions[header]}
           selectEvent={selectEvent}
           filterBy={filterBy}
