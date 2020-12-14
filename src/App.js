@@ -73,7 +73,7 @@ function App() {
     });
   }
 
-  const searchResult = useMemo( () => searchData(aPIData, searchField), [searchField, filterBy, aPIData]);
+  const searchResult = useMemo( () => searchData(aPIData, searchField), [searchField, aPIData]);
   const filterResult = useMemo( () => filterData(searchResult, filterBy), [searchField, filterBy, searchResult]);
   const paginatedResult = useMemo( () => paginateData(rowData), [rowData]);
 
