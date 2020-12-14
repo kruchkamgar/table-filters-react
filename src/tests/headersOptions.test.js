@@ -11,11 +11,12 @@ test('returns header options according to config', () => {
   const result = getHeaderOptions(data, headersConfig)
   const toArrays = {};
   for(const [key, value] of Object.entries(result)) {
-    toArrays[key] = [...value] }
+    toArrays[key] = value }
 
   expect(toArrays).toEqual({
-    "attire": ["(all)", "fast casual", "formal"],
-    "city": ["(all)", "san francisco", "denver"],
-    "genre": ["(all)", "asian", "pho", "american", "burger"],
-    "state": ["(all)", "CA", "CO"] })
- })
+    "attire": {"fast casual": 1, "formal": 1 },
+    "city": {"denver": 1, "san francisco": 1},
+    "genre": {"american,burger": 1, "asian,pho": 1},
+    "state": {"ca": 1, "co": 1}
+  })
+})
