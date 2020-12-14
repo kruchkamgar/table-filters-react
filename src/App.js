@@ -15,7 +15,6 @@ import { useState, useEffect, useMemo } from 'react';
 function App() {
   const [aPIData, setaPIData] = useState([]);
   const [headersOptions, setHeadersOptions] = useState();
-  // put into own file-- so that methods may import it (over including as an argument)
   const filterOptions = [];
 
   useEffect( () => {
@@ -27,7 +26,6 @@ function App() {
         setaPIData(data)
         setHeadersOptions(
           getHeadersOptions(data, headersConfig) )
-        // createFilterOptions(filterOptions, data);
       });
   }, []);
 
@@ -88,9 +86,10 @@ function App() {
           delete isolationFilterBy[header];
           newBaselineFilterResults[header] = filterData(searchResult, isolationFilterBy)
       }
-      setBaselineFilterResults(newBaselineFilterResults) }
-      // set filter results for each active filterBy column, independently
-        // update the column filter results only when the filterBy update involves a different column
+      // set unique 'filterResults' [for counting purposes] for each active filterBy column*
+        // update the baseline column filter results only when the filterBy update involves a different column
+      // * (so that switching filter between options in a column, shows results that match the posted counts [by not changing the baseline pool of filterResults - mutally exclusive within a column - with which getHeadersOptions counts potential results])
+      setBaselineFilterResults(newBaselineFilterResults)
   }, [filterResult]);
 
   useEffect(() => {
@@ -114,7 +113,7 @@ function App() {
       <label htmlFor="search">text search:</label>
       <input
         name="search" type="text" placeholder="name, city, or genre"
-        onKeyUp={ (event) => { //very slow... move to 'onChange' for input perhaps
+        onKeyUp={ (event) => {
           initiateSearch(event);
           // if (event.keyCode === 13) {
           //     setSearchField(event.target.value); }
