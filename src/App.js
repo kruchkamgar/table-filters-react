@@ -7,14 +7,14 @@ import Row from './components/Row';
 import searchData from './lib/search';
 import filterData from './lib/filter';
 import headersConfig from './config/headersConfig';
-import getheadersOptions from './lib/headersOptions';
+import getHeadersOptions from './lib/headersOptions';
 import paginateData from './lib/paginate';
 
 import { useState, useEffect, useMemo } from 'react';
 
 function App() {
   const [aPIData, setaPIData] = useState([]);
-  const [headersOptions, setheadersOptions] = useState();
+  const [headersOptions, setHeadersOptions] = useState();
   // put into own file-- so that methods may import it (over including as an argument)
   const filterOptions = [];
 
@@ -25,8 +25,8 @@ function App() {
       .then( response => response.json() )
       .then( data => {
         setaPIData(data)
-        setheadersOptions(
-          getheadersOptions(data, headersConfig) )
+        setHeadersOptions(
+          getHeadersOptions(data, headersConfig) )
         // createFilterOptions(filterOptions, data);
       });
   }, []);
@@ -45,12 +45,10 @@ function App() {
       const headerAdd = Object.keys(headersConfig).map( header => {
         //TODO: give indication when no results exist (filter or here)
         // empty categories (0 results) sorted to the end? tabindex for scroll-bottom, subsequently toggles to scroll-top
-        const headerOptions = headersOptions[header] ?
-          [...headersOptions[header]] : [];
         return <Header key={header} name={header}
           clickEvent={(event) => setColumn(
             event.target.name )}
-          options={headerOptions[header]}
+          options={headersOptions[header]}
           selectEvent={(event) => {
             const value = event.target.value, all = ( value === '(all)' );
             const name = event.target.name;
@@ -97,9 +95,9 @@ function App() {
 
   useEffect(() => {
     if(Object.keys(baselineFilterResults).length > 0) {
-      const updatedHeaderOptions = getHeaderOptions(baselineFilterResults, headersConfig, true)
+      const updatedHeaderOptions = getHeadersOptions(baselineFilterResults, headersConfig, true)
 
-      setHeaderOptions(prevState => {
+      setHeadersOptions(prevState => {
         return Object.assign({}, prevState, updatedHeaderOptions);
       }) }
   }, [baselineFilterResults]);

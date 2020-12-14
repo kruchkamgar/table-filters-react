@@ -1,5 +1,5 @@
-const getHeaderOptions = (data, headersConfig, setBaseline=false) => {
-  const headerOptions = {};
+const getHeadersOptions = (data, headersConfig, setBaseline=false) => {
+  const headersOptions = {};
   for( const [column, config] of Object.entries(headersConfig) ){
     let queuedOptions = []
     if(setBaseline){
@@ -15,8 +15,8 @@ const getHeaderOptions = (data, headersConfig, setBaseline=false) => {
     for(const option of queuedOptions) {
       options[option] = (options[option] || 0) + 1; }
       // options.add(option); }
-    headerOptions[column] = options; }
-  return headerOptions;
+    headersOptions[column] = options; }
+  return headersOptions;
 }
 
 const formOptions = (data, column, config) => {
@@ -32,4 +32,4 @@ const formOptions = (data, column, config) => {
   return queuedOptions;
 }
 
-export default getHeaderOptions
+export default getHeadersOptions

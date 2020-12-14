@@ -15,7 +15,7 @@ const Header = ({clickEvent, selectEvent, name, options={}}) => {
   return (
     <th name={name}>
       <div onClick={clickEvent} name={name}>{name}</div>
-      {options.length > 0 ?
+      {optionElements.length > 0 ?
         <select name={name} onChange={selectEvent}>
           {optionElements}
         </select> : null}
