@@ -1,7 +1,7 @@
 # Filtering, Search, and Sorting
 
 * useMemo to cache the results of filter and sort and search inputs
-  * reruns each on the dataSet, with the exception of same-column filter counts (to show the number of options available outside the [mutually exclusive, same-column] selected option)
+  * reruns each on the data set, with the exception of same-column filter counts (to show the number of options available outside the [mutually exclusive, same-column] selected option)
 
 
 
