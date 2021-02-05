@@ -1,4 +1,10 @@
-# Getting Started with Create React App
+# Filtering, Search, and Sorting
+
+* useMemo to cache the results of filter and sort and search inputs
+** reruns each on the dataSet, with the exception of same-column filter counts (to show the number of options available outside the [mutually exclusive, same-column] selected option)
+
+
+
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
